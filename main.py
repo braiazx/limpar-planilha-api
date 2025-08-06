@@ -1,20 +1,21 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List, Dict
-from collections import Counter
 
 app = FastAPI()
 
 class LinhaPlanilha(BaseModel):
     rows: List[Dict[str, str]]
 
-@app.post("/filtrar-assuntos")
-async def filtrar_assuntos(data: LinhaPlanilha):
+@app.post("/padronizar-maiusculo")
+async def padronizar_maiusculo(data: LinhaPlanilha):
     linhas = data.rows
-    contagem = Counter([linha.get("Assunto (J)", "").strip() for linha in linhas])
-    linhas_filtradas = [
-        linha for linha in linhas
-        if contagem.get(linha.get("Assunto (J)", "").strip(), 0) >= 3
-    ]
-    return {"linhas_validas": linhas_filtradas}
+
+    # Para cada linha, transforma todos os valores em maiúsculo
+    linhas_formatadas = []
+    for linha in linhas:
+        nova_linha = {chave: valor.upper() if isinstance(valor, str) else valor for chave, valor in linha.items()}
+        linhas_formatadas.append(nova_linha)
+
+    return {"linhas_maiusculas": linhas_formatadas}
 

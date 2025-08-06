@@ -12,13 +12,13 @@ class LinhaPlanilha(BaseModel):
 async def filtrar_assuntos(data: LinhaPlanilha):
     linhas = data.rows
 
-    # Conta a ocorrência de cada valor na coluna "assunto"
-    contagem = Counter([linha.get("assunto", "").strip() for linha in linhas])
+    # A coluna "Assunto" (com A maiúsculo) está na coluna J da planilha.
+    # O nome da chave no JSON precisa ser exatamente "Assunto".
+    contagem = Counter([linha.get("Assunto", "").strip() for linha in linhas])
 
-    # Filtra os que aparecem 3 vezes ou mais
     linhas_filtradas = [
         linha for linha in linhas
-        if contagem.get(linha.get("assunto", "").strip(), 0) >= 3
+        if contagem.get(linha.get("Assunto", "").strip(), 0) >= 3
     ]
 
     return {"linhas_validas": linhas_filtradas}
